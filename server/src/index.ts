@@ -6,7 +6,7 @@ import cors from 'cors';
 dotenv.config();
 
 export const app = express();
-const port = process.env.PORT || 8080; // Change default to 8080 for App Runner
+const port = process.env.PORT || 3000; // Change default to 8080 for App Runner
 
 app.use(cors());
 app.use(express.json());

@@ -19,20 +19,24 @@ export const upload_pdf = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "File too large to process" });
         }
         const chunksWithSession = chunks.map((chunk) => {
+            const id = uuidv4();
             chunk.metadata = {
                 ...chunk.metadata,
                 sessionId: sessionId,
+                docId: id,
             };
             return chunk;
         });
-        await vectorStore.addDocuments(chunksWithSession);
+        await vectorStore.addDocuments(chunksWithSession, {
+            ids: chunksWithSession.map(c => c.metadata.docId)
+        });
         await redis.set(`chat_history:${sessionId}`, JSON.stringify([]));
         res.status(200).json({
             message: "PDF uploaded and processed.",
             sessionId: sessionId,
             chunks: chunks.length,
         });
-    } catch (err) {
+    } catch {
         res.status(500).json({ message: "Failed to process PDF." });
     } finally {
         fs.promises.unlink(req.file.path)
@@ -146,15 +150,20 @@ export const delete_session = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "Missing sessionId parameter" });
         }
 
-        // 2. Delete chat history from in-memory store (if applicable)
+        // Delete chat history
         await redis.del(`chat_history:${sessionId}`);
 
-        // 3. Delete embeddings from vector store
-        await vectorStore.delete({
-            filter: {
-                sessionId: sessionId
-            }
+        // Find documents belonging to this session
+        const docs = await vectorStore.similaritySearch("dummy", 1000, {
+            sessionId
         });
+
+        // Extract their IDs
+        const ids = docs.map(doc => doc.metadata?.docId).filter(Boolean);
+
+        if (ids.length > 0) {
+            await vectorStore.delete({ ids });
+        }
 
         return res.status(200).json({
             message: "Session deleted successfully",
@@ -168,4 +177,5 @@ export const delete_session = async (req: Request, res: Response) => {
         });
     }
 };
+
 

@@ -2,7 +2,7 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { model } from "../utils/ai.js";
 import { vectorStore } from "../services/vectorStore.js"; // use existing initialized vectorStore
 import { StateGraph, Annotation } from "@langchain/langgraph";
-import { BaseMessage, HumanMessage, AIMessage } from "@langchain/core/messages";
+import { BaseMessage, HumanMessage, AIMessage, type HumanMessageFields } from "@langchain/core/messages";
 import { Document } from "@langchain/core/documents";
 import { redis } from "./redisClient.js";
 
@@ -33,19 +33,15 @@ const StateAnnotation = Annotation.Root({
 type ConversationState = typeof StateAnnotation.State;
 
 const retrieveDocuments = async (state: ConversationState) => {
-    try {
-        const retriever = vectorStore.asRetriever({
-            k: 5,
-            filter: { sessionId: state.sessionId } // <-- Important for session-specific context
-        });
+    const retriever = vectorStore.asRetriever({
+        k: 5,
+        filter: { sessionId: state.sessionId } // <-- Important for session-specific context
+    });
 
-        const docs = await retriever.invoke(state.question);
-        const context = docs.map((doc: Document) => doc.pageContent).join('\n\n');
+    const docs = await retriever.invoke(state.question);
+    const context = docs.map((doc: Document) => doc.pageContent).join('\n\n');
 
-        return { context };
-    } catch (error) {
-        throw error;
-    }
+    return { context };
 };
 
 const generateAnswer = async (state: ConversationState) => {
@@ -55,7 +51,7 @@ const generateAnswer = async (state: ConversationState) => {
         const rawHistory = historyJson ? JSON.parse(historyJson) : [];
 
         // Fix: Deserialize into HumanMessage / AIMessage
-        const chatHistory: BaseMessage[] = rawHistory.map((msg: any) => {
+        const chatHistory: BaseMessage[] = rawHistory.map((msg: { type: string; content: string | HumanMessageFields; }) => {
             if (msg.type === "human") return new HumanMessage(msg.content);
             if (msg.type === "ai") return new AIMessage(msg.content);
             throw new Error(`Unknown message type: ${msg.type}`);
@@ -109,7 +105,8 @@ Answer:`);
             messages: [new HumanMessage(state.question), new AIMessage(answer)]
         };
     } catch (error) {
-        throw error;
+        console.error(error);
+
     }
 };
 
