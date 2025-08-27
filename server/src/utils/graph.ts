@@ -44,7 +44,6 @@ const retrieveDocuments = async (state: ConversationState) => {
 
         return { context };
     } catch (error) {
-        console.error("Document retrieval error:", error);
         throw error;
     }
 };
@@ -110,7 +109,6 @@ Answer:`);
             messages: [new HumanMessage(state.question), new AIMessage(answer)]
         };
     } catch (error) {
-        console.error("Answer generation error:", error);
         throw error;
     }
 };

@@ -29,10 +29,8 @@ const App: React.FC = () => {
       if (item === null) return defaultValue;
 
       const parsed = JSON.parse(item);
-      console.log(`✅ Loaded ${key}:`, parsed);
       return parsed;
     } catch (error) {
-      console.error(`❌ Error loading ${key}:`, error);
       localStorage.removeItem(key); // Clean up corrupted data
       return defaultValue;
     }
@@ -41,10 +39,8 @@ const App: React.FC = () => {
   const setStorageItem = useCallback((key: string, value: any): boolean => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
-      console.log(`💾 Saved ${key}:`, value);
       return true;
     } catch (error) {
-      console.error(`❌ Error saving ${key}:`, error);
       toast.error(`Failed to save ${key.replace('askpdf-', '')}`);
       return false;
     }
@@ -62,24 +58,17 @@ const App: React.FC = () => {
   // 🔧 FIXED: Single useEffect for data loading with proper synchronization
   useEffect(() => {
     const loadPersistedData = async () => {
-      console.log('🚀 Starting data load...');
 
       try {
         // Load both pieces of data synchronously
         const loadedSessions = getStorageItem<Session[]>(STORAGE_KEYS.SESSIONS, []);
         const loadedCurrentSession = getStorageItem<Session | null>(STORAGE_KEYS.CURRENT_SESSION, null);
 
-        console.log('📊 Data loaded:', {
-          sessionsCount: loadedSessions.length,
-          hasCurrentSession: !!loadedCurrentSession
-        });
-
         // Validate current session exists in sessions array
         let validCurrentSession = loadedCurrentSession;
         if (loadedCurrentSession && loadedSessions.length > 0) {
           const sessionExists = loadedSessions.some(s => s.id === loadedCurrentSession.id);
           if (!sessionExists) {
-            console.warn('⚠️ Current session not found in sessions array, clearing...');
             validCurrentSession = null;
             localStorage.removeItem(STORAGE_KEYS.CURRENT_SESSION);
           }
@@ -87,21 +76,17 @@ const App: React.FC = () => {
 
         // Batch state updates using functional updates
         setSessions(() => {
-          console.log('🔄 Updating sessions:', loadedSessions);
           return loadedSessions;
         });
 
         setCurrentSession(() => {
-          console.log('🔄 Updating current session:', validCurrentSession);
           return validCurrentSession;
         });
 
         // Mark data as loaded
         setDataLoaded(true);
-        console.log('✅ Data loading complete!');
 
       } catch (error) {
-        console.error('💥 Critical error loading data:', error);
 
         // Reset to clean state
         setSessions([]);
@@ -126,7 +111,6 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!dataLoaded) return; // Don't save during initial load
 
-    console.log('💾 Saving sessions to localStorage:', sessions);
     setStorageItem(STORAGE_KEYS.SESSIONS, sessions);
   }, [sessions, dataLoaded, setStorageItem]);
 
@@ -134,7 +118,6 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!dataLoaded) return; // Don't save during initial load
 
-    console.log('💾 Saving current session to localStorage:', currentSession);
     if (currentSession) {
       setStorageItem(STORAGE_KEYS.CURRENT_SESSION, currentSession);
     } else {
@@ -155,12 +138,10 @@ const App: React.FC = () => {
       lastActivity: new Date().toISOString()
     };
 
-    console.log('➕ Creating new session:', enhancedSession);
 
     // Use functional updates for better state consistency
     setSessions(prevSessions => {
       const newSessions = [enhancedSession, ...prevSessions];
-      console.log('📝 Updated sessions array:', newSessions);
       return newSessions;
     });
 
@@ -171,17 +152,14 @@ const App: React.FC = () => {
 
   // Enhanced session deletion with cleanup
   const handleSessionDeleted = useCallback((sessionId: string) => {
-    console.log('🗑️ Deleting session:', sessionId);
 
     setSessions(prevSessions => {
       const updatedSessions = prevSessions.filter(s => s.id !== sessionId);
-      console.log('📝 Sessions after deletion:', updatedSessions);
       return updatedSessions;
     });
 
     // Clear current session if it's the one being deleted
     if (currentSession?.id === sessionId) {
-      console.log('🔄 Clearing current session');
       setCurrentSession(null);
     }
 
@@ -189,7 +167,6 @@ const App: React.FC = () => {
   }, [currentSession?.id]);
 
   const handleSessionSelect = useCallback((session: Session) => {
-    console.log('👆 Selecting session:', session);
     setCurrentSession(session);
     setShowUploader(false);
   }, []);
@@ -200,13 +177,11 @@ const App: React.FC = () => {
       return;
     }
 
-    console.log('🆕 Requesting new session');
     setShowUploader(true);
     setCurrentSession(null);
   }, [sessions.length]);
 
   const handleSessionUpdate = useCallback((updatedSession: Session) => {
-    console.log('🔄 Updating session:', updatedSession);
 
     setCurrentSession(updatedSession);
     setSessions(prevSessions =>

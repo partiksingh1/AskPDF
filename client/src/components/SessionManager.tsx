@@ -37,7 +37,6 @@ const SessionManager: React.FC<SessionManagerProps> = ({
                 toast.success('Session deleted successfully');
             } catch (error) {
                 toast.error('Failed to delete session');
-                console.error('Delete session error:', error);
             } finally {
                 setDeletingSession(null);
             }

@@ -33,7 +33,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
       const history = await getChatHistory(session.id);
       setMessages(history.history || []);
     } catch (error) {
-      console.error('Failed to load chat history:', error);
       toast.error('Failed to load chat history');
     } finally {
       setIsLoadingHistory(false);
@@ -81,10 +80,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
       onSessionUpdate(updatedSession);
 
     } catch (error) {
+      const errorMessage: ChatMessage = {
+        type: 'ai',
+        content: 'Sorry, I encountered an error processing your question. Please try again.',
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, errorMessage]);
       toast.error('Failed to get response. Please try again.');
-      console.error('Search error:', error);
-      // Remove the user message if the API call failed
-      setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
@@ -98,7 +100,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
         toast.success('Chat history cleared successfully');
       } catch (error) {
         toast.error('Failed to clear chat history');
-        console.error('Clear history error:', error);
       }
     }
   };

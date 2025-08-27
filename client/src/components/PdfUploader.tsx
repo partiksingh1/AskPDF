@@ -100,7 +100,6 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
             toast.success(`PDF uploaded successfully! ${response.chunks} chunks processed.`);
         } catch (error) {
             toast.error('Failed to upload PDF. Please try again.');
-            console.error('Upload error:', error);
         } finally {
             setIsLoading(false);
         }

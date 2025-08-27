@@ -14,7 +14,3 @@ redis.on('error', (err: any) => console.log('Redis Client Error', err));
 
 await redis.connect();
 
-await redis.set('foo', 'bar');
-const result = await redis.get('foo');
-console.log(result)  // >>> bar
-

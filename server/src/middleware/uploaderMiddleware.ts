@@ -27,7 +27,6 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
         cb(null, true);
     } else {
         cb(null, false);
-        console.error('Only PDF files are allowed!');
     }
 };
 

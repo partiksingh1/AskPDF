@@ -6,7 +6,6 @@ export const loadPdfContent = async (filePath: string) => {
         const docs = await loader.load();
         return docs;
     } catch (err) {
-        console.error("Error loading PDF:", err);
         throw new Error("Failed to load PDF content.");
     }
 };
