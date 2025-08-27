@@ -8,7 +8,9 @@ dotenv.config();
 export const app = express();
 const port = process.env.PORT || 3000; // Change default to 8080 for App Runner
 
-app.use(cors());
+app.use(cors({
+    origin: "*"
+}));
 app.use(express.json());
 app.use("/api/v1", router)
 
