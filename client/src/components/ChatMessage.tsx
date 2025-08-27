@@ -1,4 +1,3 @@
-// src/components/ChatMessage.tsx
 import { CpuIcon, UserIcon } from 'lucide-react';
 import React from 'react';
 import type { ChatMessage } from '../types';

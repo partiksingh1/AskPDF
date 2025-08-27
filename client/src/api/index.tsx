@@ -1,6 +1,6 @@
 import type { ApiError, ChatHistory, SearchResponse, UploadResponse } from "../types";
 
-const API_BASE_URL = 'http://localhost:3000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_BASEURL
 
 class ApiClient {
     private async request<T>(

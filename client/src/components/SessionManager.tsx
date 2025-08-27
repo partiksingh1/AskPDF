@@ -1,15 +1,15 @@
-// src/components/SessionManager.tsx
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import type { Session } from '../types';
 import { deleteSession } from '../api';
-import { Clock, CloudCheck, Paperclip, TrashIcon } from 'lucide-react';
+import { Clock, CloudCheck, Paperclip, Plus, AlertTriangle, Trash2Icon } from 'lucide-react';
 
 interface SessionManagerProps {
     sessions: Session[];
     currentSession: Session | null;
     onSessionSelect: (session: Session) => void;
     onSessionDeleted: (sessionId: string) => void;
+    onNewSessionRequest: () => void;
     isLoading: boolean;
 }
 
@@ -18,9 +18,13 @@ const SessionManager: React.FC<SessionManagerProps> = ({
     currentSession,
     onSessionSelect,
     onSessionDeleted,
+    onNewSessionRequest,
     isLoading
 }) => {
     const [deletingSession, setDeletingSession] = useState<string | null>(null);
+
+    const MAX_SESSIONS = 3;
+    const canCreateNewSession = sessions.length < MAX_SESSIONS;
 
     const handleDeleteSession = async (session: Session, e: React.MouseEvent) => {
         e.stopPropagation();
@@ -38,6 +42,14 @@ const SessionManager: React.FC<SessionManagerProps> = ({
                 setDeletingSession(null);
             }
         }
+    };
+
+    const handleNewSession = () => {
+        if (!canCreateNewSession) {
+            toast.error(`You can only have ${MAX_SESSIONS} sessions maximum. Please delete an existing session first.`);
+            return;
+        }
+        onNewSessionRequest();
     };
 
     const formatTimeAgo = (dateString: string) => {
@@ -58,13 +70,34 @@ const SessionManager: React.FC<SessionManagerProps> = ({
     return (
         <div className="bg-white rounded-xl shadow-lg">
             <div className="p-6 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center space-x-2">
-                    <Paperclip className="h-5 w-5" />
-                    <span>Chat Sessions</span>
-                </h3>
-                <p className="text-sm text-gray-600 mt-1">
-                    {sessions.length} session{sessions.length !== 1 ? 's' : ''}
-                </p>
+                <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-lg font-semibold text-gray-800 flex items-center space-x-2">
+                        <Paperclip className="h-5 w-5" />
+                        <span>Chat Sessions</span>
+                    </h3>
+                    <button
+                        onClick={handleNewSession}
+                        disabled={!canCreateNewSession || isLoading}
+                        className={`p-2 rounded-lg transition-all duration-200 ${canCreateNewSession && !isLoading
+                            ? 'text-blue-600 hover:bg-blue-50 hover:text-blue-700'
+                            : 'text-gray-400 cursor-not-allowed'
+                            }`}
+                        title={canCreateNewSession ? 'Create new session' : `Maximum ${MAX_SESSIONS} sessions allowed`}
+                    >
+                        <Plus className="h-5 w-5" />
+                    </button>
+                </div>
+                <div className="flex items-center justify-between">
+                    <p className="text-sm text-gray-600">
+                        {sessions.length} of {MAX_SESSIONS} sessions
+                    </p>
+                    {!canCreateNewSession && (
+                        <div className="flex items-center space-x-1 text-xs text-amber-600">
+                            <AlertTriangle className="h-3 w-3" />
+                            <span>Limit reached</span>
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="max-h-96 overflow-y-auto">
@@ -105,14 +138,14 @@ const SessionManager: React.FC<SessionManagerProps> = ({
                                     <button
                                         onClick={(e) => handleDeleteSession(session, e)}
                                         disabled={deletingSession === session.id}
-                                        className="opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-red-600 
-                             hover:bg-red-50 rounded transition-all duration-200 ml-2"
+                                        className="opacity-90 group-hover:opacity-100 p-3 text-gray-400 hover:text-red-600 
+                                                 hover:bg-red-200 rounded transition-all  ml-2"
                                         title="Delete session"
                                     >
                                         {deletingSession === session.id ? (
                                             <div className="animate-spin h-4 w-4 border-2 border-red-600 border-t-transparent rounded-full" />
                                         ) : (
-                                            <TrashIcon className="h-4 w-4" />
+                                            <Trash2Icon className="h-4 w-4" />
                                         )}
                                     </button>
                                 </div>

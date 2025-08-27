@@ -3,7 +3,7 @@ import type { ChatMessage, Session } from "../types";
 import { clearChatHistory, getChatHistory, searchDocument } from "../api";
 import { toast } from "react-toastify";
 import LoadingSpinner from "./LoadingSpinner";
-import { PaperclipIcon, TrashIcon } from "lucide-react";
+import { SendHorizonal, TrashIcon } from "lucide-react";
 import ChatMessageComponent from "./ChatMessage";
 
 interface ChatInterfaceProps {
@@ -127,9 +127,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
       <div className="p-6 border-b border-gray-200 flex justify-between items-center">
         <div>
           <h2 className="text-xl font-semibold text-gray-800">{session.name}</h2>
-          <p className="text-sm text-gray-600">
-            {session.chunks} chunks processed • Last active {new Date(session.lastActivity).toLocaleString()}
-          </p>
         </div>
         <button
           onClick={handleClearHistory}
@@ -153,7 +150,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
           </div>
         ) : (
           messages.map((message, index) => (
-            <ChatMessageComponent message={message} />
+            <ChatMessageComponent key={index} message={message} />
           ))
         )}
 
@@ -190,11 +187,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
           <button
             type="submit"
             disabled={!inputValue.trim() || isLoading}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
+            className="px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
                      disabled:opacity-50 disabled:cursor-not-allowed transition-colors
                      flex items-center space-x-2"
           >
-            <PaperclipIcon className="h-5 w-5" />
+            <SendHorizonal />
           </button>
         </div>
         <div className="mt-2 text-xs text-gray-500">
