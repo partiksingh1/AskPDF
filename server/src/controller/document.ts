@@ -127,7 +127,7 @@ export const clear_chat_history = async (req: Request, res: Response) => {
         if (!sessionId) {
             return res.status(400).json({ message: "Missing sessionId parameter" });
         }
-        await redis.del(`chat_history:${sessionId}`);
+        await redis.set(`chat_history:${sessionId}`, JSON.stringify([]));
 
         return res.status(200).json({
             message: "Chat history cleared successfully",
