@@ -30,7 +30,7 @@ const App: React.FC = () => {
 
       const parsed = JSON.parse(item);
       return parsed;
-    } catch (error) {
+    } catch {
       localStorage.removeItem(key); // Clean up corrupted data
       return defaultValue;
     }
@@ -40,7 +40,7 @@ const App: React.FC = () => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
       return true;
-    } catch (error) {
+    } catch {
       toast.error(`Failed to save ${key.replace('askpdf-', '')}`);
       return false;
     }
@@ -86,7 +86,7 @@ const App: React.FC = () => {
         // Mark data as loaded
         setDataLoaded(true);
 
-      } catch (error) {
+      } catch {
 
         // Reset to clean state
         setSessions([]);

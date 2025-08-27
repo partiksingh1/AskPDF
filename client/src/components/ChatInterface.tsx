@@ -32,7 +32,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
     try {
       const history = await getChatHistory(session.id);
       setMessages(history.history || []);
-    } catch (error) {
+    } catch {
       toast.error('Failed to load chat history');
     } finally {
       setIsLoadingHistory(false);
@@ -79,7 +79,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
       };
       onSessionUpdate(updatedSession);
 
-    } catch (error) {
+    } catch {
       const errorMessage: ChatMessage = {
         type: 'ai',
         content: 'Sorry, I encountered an error processing your question. Please try again.',
@@ -98,7 +98,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
         await clearChatHistory(session.id);
         setMessages([]);
         toast.success('Chat history cleared successfully');
-      } catch (error) {
+      } catch {
         toast.error('Failed to clear chat history');
       }
     }
@@ -107,7 +107,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ session, onSessionUpdate 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e as any);
+      handleSubmit(e);
     }
   };
 

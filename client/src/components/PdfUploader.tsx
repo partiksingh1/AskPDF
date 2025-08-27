@@ -98,7 +98,7 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
             onSessionCreated(session);
             setSelectedFile(null);
             toast.success(`PDF uploaded successfully! ${response.chunks} chunks processed.`);
-        } catch (error) {
+        } catch {
             toast.error('Failed to upload PDF. Please try again.');
         } finally {
             setIsLoading(false);
