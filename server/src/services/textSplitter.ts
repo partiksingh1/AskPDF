@@ -10,7 +10,8 @@ export const splitIntoChunks = async (docs: Document[]) => {
 
         const chunks = await splitter.splitDocuments(docs);
         return chunks;
-    } catch {
+    } catch (error) {
+        console.error(error);
         throw new Error("Failed to split document into chunks.");
     }
 };

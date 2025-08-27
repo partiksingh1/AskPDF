@@ -36,7 +36,8 @@ export const upload_pdf = async (req: Request, res: Response) => {
             sessionId: sessionId,
             chunks: chunks.length,
         });
-    } catch {
+    } catch (error) {
+        console.error(error);
         res.status(500).json({ message: "Failed to process PDF." });
     } finally {
         fs.promises.unlink(req.file.path)
@@ -93,6 +94,7 @@ export const search = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             message: "Internal server error in search",
             error: (error as Error).message || "Unknown error"
@@ -114,6 +116,7 @@ export const get_chat_history = async (req: Request, res: Response) => {
             history: history
         });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             message: "Failed to retrieve chat history",
             error: (error as Error).message || "Unknown error"
@@ -135,6 +138,7 @@ export const clear_chat_history = async (req: Request, res: Response) => {
             sessionId
         });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             message: "Failed to clear chat history",
             error: (error as Error).message || "Unknown error"
@@ -171,6 +175,7 @@ export const delete_session = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
+        console.error(error);
         return res.status(500).json({
             message: "Failed to delete session",
             error: (error as Error).message || "Unknown error"
