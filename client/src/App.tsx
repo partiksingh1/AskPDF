@@ -289,7 +289,7 @@ const App: React.FC = () => {
                 >
                   {sessions.length >= MAX_SESSIONS_PER_USER
                     ? `Session Limit Reached (${MAX_SESSIONS_PER_USER}/${MAX_SESSIONS_PER_USER})`
-                    : 'Create New Session'
+                    : 'Create New Chat'
                   }
                 </button>
               </div>

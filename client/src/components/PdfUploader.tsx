@@ -180,7 +180,7 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
                                 ) : (
                                     <CloudIcon className="h-5 w-5" />
                                 )}
-                                <span>{isLoading ? 'Processing...' : 'Create Session'}</span>
+                                <span>{isLoading ? 'Processing...' : 'Create Chat'}</span>
                             </button>
                             <button
                                 onClick={removeSelectedFile}
