@@ -209,7 +209,7 @@ const App: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Debug info - remove in production */}
         <div className="mb-4 p-2 rounded text-xs text-gray-600">
-          Sessions: {sessions.length} | Current: {currentSession?.name || 'None'} | Data Loaded: {dataLoaded ? '✅' : '⏳'}
+          Current: {currentSession?.name || 'None'}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

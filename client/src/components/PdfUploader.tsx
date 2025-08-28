@@ -137,7 +137,7 @@ const PDFUploader: React.FC<PDFUploaderProps> = ({
             <div className="mb-4 p-3 bg-blue-50 rounded-lg">
                 <div className="flex items-center justify-between text-sm">
                     <span className="text-blue-700">
-                        Sessions: {currentSessionCount}/{maxSessions}
+                        Chat: {currentSessionCount}/{maxSessions}
                     </span>
                     <span className="text-blue-600">
                         {maxSessions - currentSessionCount} remaining
