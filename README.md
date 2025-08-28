@@ -55,3 +55,8 @@ Explore the application and chat with your own PDF:
 
 8. **Answer Generation**: **Google Gemini** generates a contextual response using the retrieved chunks and chat history.
 
+### Screenshots
+
+<img width="1440" height="785" alt="Screenshot 2025-08-28 at 6 10 41 PM" src="https://github.com/user-attachments/assets/04952cd9-0d2d-4b07-9929-5e22bd55e6ec" />
+
+
