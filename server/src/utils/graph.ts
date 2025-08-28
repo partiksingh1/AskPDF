@@ -63,24 +63,28 @@ const generateAnswer = async (state: ConversationState) => {
             ? recentHistory.map(msg => `${msg._getType()}: ${msg.content}`).join('\n')
             : '';
         const prompt = ChatPromptTemplate.fromTemplate(`
-You are a helpful AI assistant that answers questions based on the provided context and conversation history.
-
-Conversation History:
-{conversationHistory}
-
-Current Context from Documents:
-{context}
-
-Current Question: {question}
-
-Instructions:
-1. Answer based primarily on the document context provided
-2. Consider the conversation history for better understanding
-3. If the information is not in the context, say so clearly
-4. Be concise but comprehensive
-5. Reference specific parts of the documents when relevant
-
-Answer:`);
+                You are an AI assistant that answers questions based only on the provided document context and prior conversation history.
+                
+                Conversation History:
+                {conversationHistory}
+                
+                Document Context:
+                {context}
+                
+                User Question:
+                {question}
+                
+                Instructions:
+                1. Use only the Document Context to answer the question.
+                2. If the answer is not found in the Document Context, respond with: "The provided documents do not contain enough information to answer this question."
+                3. Use the Conversation History to understand user intent or clarify ambiguities, but not as a source of factual information.
+                4. Do not use information outside the Document Context.
+                5. Keep your answers concise and relevant.
+                6. If appropriate, refer directly to phrases or sections from the Document Context.
+                7. Do not make assumptions or invent facts.
+                
+                Answer:
+                `);
 
         const formattedPrompt = await prompt.invoke({
             conversationHistory: conversationContext,
